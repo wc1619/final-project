@@ -31,6 +31,7 @@ urlpatterns = [
     # url(r'^$', views.index, name='index'),
     url(r'^fasteat/', include(('fasteat.urls', 'fasteat'),namespace='fasteat')),
     url(r'^admin/', admin.site.urls),
+    url(r'^$',views.index,name='home'),
 
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
