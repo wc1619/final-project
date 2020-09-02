@@ -1,1 +1,1 @@
-web:gunicorn venueonline.wsgi --log-file -
+web:gunicorn fasteat.wsgi --log-file -
