@@ -1,0 +1,318 @@
+{% extends 'fasteat/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- SubHeader =============================================== -->
+<section class="parallax-window" id="short" data-parallax="scroll" data-image-src="{% static 'img/bg.jpeg' %}" data-natural-width="1400" data-natural-height="350">
+    <div id="subheader">
+        <div id="sub_content">
+            <h1>Place your order</h1>
+{#            <div class="bs-wizard">#}
+{#                <div class="col-xs-4 bs-wizard-step active">#}
+{#                    <div class="text-center bs-wizard-stepnum"><strong>1.</strong> Your details</div>#}
+{#                    <div class="progress"><div class="progress-bar"></div></div>#}
+{#                    <a href="#0" class="bs-wizard-dot"></a>#}
+{#                </div>#}
+{##}
+{#                <div class="col-xs-4 bs-wizard-step disabled">#}
+{#                    <div class="text-center bs-wizard-stepnum"><strong>2.</strong> Payment</div>#}
+{#                    <div class="progress"><div class="progress-bar"></div></div>#}
+{#                    <a href="checkout.html" class="bs-wizard-dot"></a>#}
+{#                </div>#}
+{##}
+{#                <div class="col-xs-4 bs-wizard-step disabled">#}
+{#                    <div class="text-center bs-wizard-stepnum"><strong>3.</strong> Finish!</div>#}
+{#                    <div class="progress"><div class="progress-bar"></div></div>#}
+{#                    <a href="confirm.html" class="bs-wizard-dot"></a>#}
+{#                </div>#}
+{#            </div><!-- End bs-wizard -->#}
+        </div><!-- End sub_content -->
+    </div><!-- End subheader -->
+</section><!-- End section -->
+<!-- End SubHeader ============================================ -->
+
+<div id="position">
+    <div class="container">
+{#        <ul>#}
+{#            <li><a href="#0">Home</a></li>#}
+{#            <li><a href="#0">Category</a></li>#}
+{#            <li>Page active</li>#}
+{#        </ul>#}
+{#        <a href="#0" class="search-overlay-menu-btn"><i class="icon-search-6"></i> Search</a>#}
+    </div>
+</div><!-- Position -->
+
+<!-- Content ================================================== -->
+<div class="container margin_60_35">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="box_style_2 hidden-xs info">
+                <h4 class="nomargin_top">Dining time <i class="icon_clock_alt pull-right"></i></h4>
+                <p>
+                    <strong>{{restaurant.startTime}} - {{ restaurant.endTime }}</strong>
+                </p>
+                <hr>
+                <h4>Secure payment <i class="icon_creditcard pull-right"></i></h4>
+                <p>
+                   Pay with your paypal.
+                </p>
+            </div><!-- End box_style_1 -->
+
+            <div class="box_style_2 hidden-xs" id="help">
+                <i class="icon_lifesaver"></i>
+                <h4>Need <span>Help?</span></h4>
+                <a href="tel://00447960910198" class="phone">+44 {{restaurant.phone}}</a>
+
+            </div>
+
+        </div><!-- End col-md-3 -->
+
+        <div  class="col-md-5">
+            <div class="box_style_2" id="order_process">
+                <h2 class="inner">Your details</h2>
+                <form id="form">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" class="form-control" id="name_order" name="name" placeholder="name">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone number</label>
+                        <input type="text" id="tel_order" name="phone" class="form-control" placeholder="+44 0712345612">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email_booking_2" name="email" class="form-control" placeholder="Your email">
+                    </div>
+                    <hr>
+{#                    <div class="row">#}
+{#                        <div class="col-md-12">#}
+{#                            <label>Notes for the restaurant</label>#}
+{#                            <textarea class="form-control" style="height:50px" placeholder="Ex. Allergies, cash change..." name="notes" id="notes"></textarea>#}
+{#                        </div>#}
+{#                    </div>#}
+                    <br>
+                    <input id="form-button" class="btn_full btn-outline-secondary" type="submit" value="Continue">
+                </form>
+            </div><!-- End box_style_1 -->
+
+            <div class="box_style_2" id="customer-info">
+                <h2 class="inner">Your details</h2>
+                <pre class="tab"><strong>Name:</strong>   <i>{{ request.user.username }}</i></pre>
+
+                <pre class="tab"><strong>Email:</strong>   <i>{{ request.user.email }}</i></pre>
+            </div><!-- End box_style_1 -->
+            <div class="box_style_2 hidden" id="payment-info">
+                <h2 class="inner">Payment methods</h2>
+                <div id="paypal-button-container"></div>
+                {#                    <button id='pay' class="btn_full btn-outline-secondary">Pay</button>#}
+            </div><!-- End box_style_2 -->
+
+
+        </div><!-- End col-md-6 -->
+
+        <div class="col-md-4" id="sidebar">
+            <div class="theiaStickySidebar">
+                <div id="cart_box">
+                    <h3>Your order <i class="icon_cart_alt pull-right"></i></h3>
+                    <table class="table table_summary">
+                        <thead>
+                        <tr>
+                            <th>
+                                Item
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    {{ item.foodItem.name }}
+                                </td>
+                                <td>
+                                    <strong>{{ item.quantity }}</strong>
+                                    <a data-foodid={{ item.foodItem.id }} data-action='add' class="add_item update_cart"><i class="icon_plus_alt"></i></a>
+                                    <a data-foodid={{ item.foodItem.id }} data-action='remove' class="remove_item update_cart"><i class="icon_minus_alt"></i></a>
+                                </td>
+                                <td>
+                                    <strong class="pull-right">£{{ item.getItemsPrice | floatformat:2 }}</strong>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <hr>
+                    <div class="row" id="options_2">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-6">
+                            <label><input type="radio" value="" checked name="option_2" class="icheck">Eat in</label>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-6">
+                            <label><input type="radio" value="" name="option_2" class="icheck">Take Away</label>
+                        </div>
+                    </div><!-- Edn options 2 -->
+                    <hr>
+                    <table class="table table_summary">
+                        <tbody>
+                        {% if order %}
+                            <tr>
+                                <td>
+                                    <strong>Items</strong> <span class="pull-right"><strong>{{ order.getTotalQuantity }}</strong></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="total">
+                                    TOTAL <span class="pull-right">£{{ order.getTotalPrice | floatformat:2 }}</span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                    <hr>
+                    <a id = 'sbmOrder' class="btn_full">Confirm your order</a>
+                    <a class="btn_full_outline" href="{% url 'fasteat:menu' %}"><i class="icon-right"></i> Add other items</a>
+
+
+                </div><!-- End cart_box -->
+            </div><!-- End theiaStickySidebar -->
+        </div><!-- End col-md-3 -->
+
+    </div><!-- End row -->
+</div><!-- End container -->
+<!-- End Content =============================================== -->
+
+
+<!-- SPECIFIC SCRIPTS -->
+<script type="text/javascript">
+    var user = '{{ request.user }}'
+</script>
+<script type="text/javascript">
+    var user = '{{ request.user }}'
+    var totalPrice = '{{order.getTotalPrice}}'
+
+    if (user !== 'AnonymousUser'){
+        {#document.getElementById('order_process').innerHTML= ''#}
+        {#document.getElementById('payment-info').classList.remove('hidden')#}
+        document.getElementById('order_process').classList.add('hidden')
+        console.log('UserName',user.username);
+    }
+    else{
+        console.log('AnonymousUser');
+        document.getElementById('customer-info').classList.add('hidden')
+    }
+
+    var form = document.getElementById('form')
+
+    form.addEventListener('submit',function (e) {
+        e.preventDefault()
+        console.log('submitted')
+        document.getElementById('form-button').classList.add('hidden')
+        {#document.getElementById('payment-info').classList.remove('hidden')#}
+    })
+
+    if(totalPrice > 0){
+        console.log('totalprice:',totalPrice)
+        document.getElementById('sbmOrder').addEventListener('click',function (e) {
+            {#submitFormData()#}
+            {#window.location.href="{% url "fasteat:confirm" %}"#}
+            document.getElementById('payment-info').classList.remove('hidden')
+        })
+    }
+    else{
+        console.log('No totalprice:',totalPrice)
+        document.getElementById('sbmOrder').addEventListener('click',function (e) {
+            alert('You have no item in your cart. Please add your food');
+            window.location.href = '{% url 'fasteat:venuesgrid' %}'
+        })
+    }
+</script>
+
+<!-- Include the PayPal JavaScript SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=ATemUbUXMJr-QKmgnRmnM2is2PxengyjLOpG3hQrTXLZRcolFX_1B_aiCpazAkphubBDVM2nD3YP1WrR&currency=GBP"></script>
+<script>
+    var totalPrice = '{{order.getTotalPrice}}'
+    // Render the PayPal button into #paypal-button-container
+    paypal.Buttons({
+        // Set up the transaction
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: parseFloat(totalPrice).toFixed(2)
+                    }
+                }]
+            });
+        },
+
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Show a success message to the buyer
+                alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                submitFormData()
+                location.reload()
+                window.location.href="{% url "fasteat:confirm" %}"
+            });
+        }
+
+    }).render('#paypal-button-container');
+
+    function submitFormData() {
+        console.log('Payment done')
+        var userData = {
+            'name':null,
+            'phone':null,
+            'email':null,
+            'totalPrice':totalPrice,
+        }
+
+        if (user === 'AnonymousUser'){
+            userData.name = form.name.value
+            userData.phone = form.phone.value
+            userData.email = form.email.value
+        }
+
+        var url = '/fasteat/processOrder/'
+
+        fetch(url,{
+            method:"POST",
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRFToken':csrftoken,
+            },
+            body:JSON.stringify({'form':userData})
+        })
+
+            .then((response)=>{
+                return response.json();
+            })
+
+            .then( data =>{
+                console.log('success',data);
+                cart = {}      //empty the cart cookie when successfully make the payment and submit the order
+                document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+                alert('cart emtpy')
+                console.log('cart empty');
+                {#window.location.href = '{% url 'fasteat:venuesgrid' %}'#}
+            })
+    }
+</script>
+
+
+<script src="{% static 'js/ResizeSensor.min.js' %}"></script>
+<script src="{% static 'js/theia-sticky-sidebar.min.js' %}"></script>
+
+<script>
+    jQuery('#sidebar').theiaStickySidebar({
+        additionalMarginTop: 80
+    });
+</script>
+
+{% endblock content %}
+
+

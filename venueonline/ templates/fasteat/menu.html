@@ -1,0 +1,207 @@
+{% extends 'fasteat/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- SubHeader ============================================== -->
+<section class="parallax-window" data-parallax="scroll" data-image-src="{% static "img/bg.jpeg" %}" data-natural-width="1400" data-natural-height="470">
+    <div id="subheader">
+        <div id="sub_content">
+            <div id="thumb"><img src="{{restaurant.image_url}}" alt=""></div>
+             <h1>{{ restaurant.name }}</h1>
+{#            <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i> (<small><a href="detail_page_2.html">Read Reviews</a></small>)</div>#}
+            <hr>
+            <div><i class="icon_pin"></i> {{ restaurant.address }} </div>
+            <div><strong>Open Time:</strong> {{ restaurant.startTime}} - {{restaurant.endTime}}</div>
+        </div><!-- End sub_content -->
+    </div><!-- End subheader -->
+</section><!-- End section -->
+<!-- End SubHeader ============================================ -->
+
+<div id="position">
+    <div class="container">
+{#        <ul>#}
+{#            <li><a href="#0">Home</a></li>#}
+{#            <li><a href="#0">Category</a></li>#}
+{#            <li>Page active</li>#}
+{#        </ul>#}
+{#        <a href="#0" class="search-overlay-menu-btn"><i class="icon-search-6"></i> Search</a>#}
+    </div>
+</div><!-- Position -->
+
+<!-- Content ================================================== -->
+<div class="container margin_60_35">
+    <div class="row">
+
+        <div class="col-md-3">
+            <p><a href="{% url 'fasteat:home' %}" class="btn_side">Back to home</a></p>
+            <div class="box_style_1">
+                <ul id="cat_nav">
+                    {% for category in categories %}
+                    <li><a href="#{{ category }}" class="active">{{category}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div><!-- End box_style_1 -->
+
+            <div class="box_style_2 hidden-xs" id="help">
+                <i class="icon_lifesaver"></i>
+                <h4>Need <span>Help?</span></h4>
+{#                {% with phoneno='tel://0044'|add: restaurant.phone%}#}
+{#                <a href="{{ phoneno }}" class="phone">{{restaurant.phone}}</a>#}
+{#                {% endwith %}#}
+                <p>{{restaurant.phone}}</p>
+                <small>Call us between {{ restaurant.startTime }} - {{restaurant.endTime}} workday</small>
+            </div>
+        </div><!-- End col-md-3 -->
+
+        <div class="col-md-6">
+            <div class="box_style_2" id="main_menu">
+                <h2 class="inner">Menu</h2>
+            {% for category in categories %}
+                <h3 class="nomargin_top" id="{{ category }}">{{category}}</h3>
+                <table class="table table-striped cart-list">
+                    <thead>
+                    <tr>
+                        <th>
+                            Item
+                        </th>
+                        <th>
+                            Price
+                        </th>
+                        <th>
+                            Order
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for food in foods%}
+                        {% if food.itemCategory == category %}
+                        <tr>
+                            <td>
+                                <figure class="thumb_menu_list"><img src="{{ food.image_url }}" alt="thumb"></figure>
+                                <h5>{{ food.name}}</h5>
+                                <small>{{ food.description }}</small>
+                            </td>
+                            <td>
+                                <strong>£{{food.price}}</strong>
+                            </td>
+                            <td class="options">
+                                <a data-foodid = {{food.id}} data-action="add" class="dropdown-toggle add_btn update_cart" data-toggle="dropdown" aria-expanded="true" ><i class="icon_plus_alt2"></i></a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <hr>
+            {% endfor %}
+
+            </div><!-- End box_style_1 -->
+        </div><!-- End col-md-6 -->
+
+        <div class="col-md-3" id="sidebar">
+            <div class="theiaStickySidebar">
+                <div id="cart_box" >
+                    <h3>Your order <i class="icon_cart_alt pull-right"></i></h3>
+                    <table class="table table_summary">
+                        <thead>
+                        <tr>
+                            <th>
+                                Item
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Price
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    {{ item.foodItem.name }}
+                                </td>
+                                <td>
+                                    <strong>{{ item.quantity }}</strong><a data-foodid={{ item.foodItem.id }} data-action='remove' class="remove_item update_cart"><i class="icon_minus_alt"></i></a>
+                                </td>
+                                <td>
+                                    <strong class="pull-right">£{{ item.getItemsPrice }}</strong>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+{#                    <hr>#}
+{#                    <div class="row" id="options_2">#}
+{#                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-6">#}
+{#                            <label><input type="radio" value="" checked name="option_2" class="icheck">Eat In</label>#}
+{#                        </div>#}
+{#                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-6">#}
+{#                            <label><input type="radio" value="" name="option_2" class="icheck">Take Away</label>#}
+{#                        </div>#}
+{#                    </div><!-- Edn options 2 -->#}
+
+                    <hr>
+                    <table class="table table_summary">
+                        <tbody>
+                        {% if order %}
+                            {#					<tr>#}
+                            {#						<td>#}
+                            {#							 Subtotal <span class="pull-right">£{{ order.getTotalPrice }}</span>#}
+                            {#						</td>#}
+                            {#					</tr>#}
+                            {#					<tr>#}
+                            {#						<td>#}
+                            {#							Service fee <span class="pull-right">£3</span>#}
+                            {#						</td>#}
+                            {#					</tr>#}
+                            <tr>
+                                <td class="total">
+                                    TOTAL <span class="pull-right">£{{ order.getTotalPrice }}</span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                    <hr>
+                    <a class="btn_full" href="{% url 'fasteat:checkout' %}">Go to checkout</a>
+                    {#					<a class="btn_full" href="{% url 'fasteat:add-to-cart'  %}">Order now</a>#}
+                </div><!-- End cart_box -->
+            </div><!-- End theiaStickySidebar -->
+        </div><!-- End col-md-3 -->
+
+    </div><!-- End row -->
+</div><!-- End container -->
+<!-- End Content =============================================== -->
+
+
+
+<!-- SPECIFIC SCRIPTS -->
+<script  src="{% static "js/cat_nav_mobile.js" %}"></script>
+<script>$('#cat_nav').mobileMenu();</script>
+<script src="{% static "js/ResizeSensor.min.js" %}"></script>
+<script src="{% static "js/theia-sticky-sidebar.min.js" %}"></script>
+<script>
+    jQuery('#sidebar').theiaStickySidebar({
+        additionalMarginTop: 80
+    });
+</script>
+<!-- SMOOTH SCROLL -->
+<script>
+    $('#cat_nav a[href^="#"]').click(function() {
+        if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+            || location.hostname == this.hostname) {
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top -75
+                }, 800);
+                return false;
+            }
+        }
+    });
+</script>
+{% endblock content %}
+

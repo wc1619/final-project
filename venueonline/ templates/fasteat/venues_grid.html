@@ -1,0 +1,114 @@
+{% extends 'fasteat/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- SubHeader =============================================== -->
+<section class="parallax-window" id="short" data-parallax="scroll" data-image-src="{% static 'img/bg.jpeg'%}" data-natural-width="1400" data-natural-height="350">
+    <div id="subheader">
+        <div id="sub_content">
+            <h1>Your online menus</h1>
+        </div><!-- End sub_content -->
+    </div><!-- End subheader -->
+</section><!-- End section -->
+<!-- End SubHeader ============================================ -->
+
+<div id="position">
+    <div class="container">
+        <ul>
+
+        </ul>
+{#        <a href="#0" class="search-overlay-menu-btn"><i class="icon-search-6"></i> Search</a>#}
+    </div>
+</div><!-- Position -->
+
+<div class="collapse" id="collapseMap">
+    <div id="map" class="map"></div>
+</div><!-- End Map -->
+
+<!-- Content ================================================== -->
+<div class="container margin_60_35">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="tools">
+                <div class="row">
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+{#                        <div class="styled-select">#}
+{#                            <select name="sort_rating" id="sort_rating">#}
+{#                                <option value="" selected>Sort by ranking</option>#}
+{#                                <option value="lower">Lowest ranking</option>#}
+{#                                <option value="higher">Highest ranking</option>#}
+{#                            </select>#}
+{#                        </div>#}
+                    </div>
+
+                    <div class="col-md-9 col-sm-9 hidden-xs">
+                        <a href="{% url 'fasteat:venueslist' %}" class="bt_filters"><i class="icon-list"></i></a>
+                    </div>
+                </div>
+            </div><!--End tools -->
+
+            <div class="row">
+                {% for restaurant in restaurants %}
+                    <div class="col-md-6 col-sm-6 wow zoomIn" data-wow-delay="0.1s">
+                        <a id='res' data-resid={{ restaurant.id}} data-resname={{ restaurant.name }} href="{% url 'fasteat:menu' %}" class="entervenue strip_list grid">
+                            {#                    <a id='res'  href="{% url 'fasteat:menu' %}" class="entervenue strip_list grid">#}
+{#                            <div class="ribbon_1">Popular</div>#}
+                            <div class="desc">
+                                <div class="thumb_strip">
+                                    <img src="{{ restaurant.image_url }}" alt="">
+                                </div>
+{#                                <div class="rating">#}
+{#                                    <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>#}
+{#                                </div>#}
+                                <h3>{{ restaurant.name }}</h3>
+{#                                <div class="type">#}
+{#                                    Mexican / American#}
+{#                                </div>#}
+                                <div class="location">
+                                    {{ restaurant.address }} <br><span class="opening">{{ restaurant.startTime }}-{{ restaurant.endTime }}</span>
+                                </div>
+                                <ul>
+                                    <li>Take away<i class="icon_check_alt2 ok"></i></li>
+                                    <li>Eat in<i class="icon_check_alt2 ok"></i></li>
+                                </ul>
+                            </div>
+                        </a><!-- End strip_list-->
+                    </div><!-- End col-md-6-->
+                {% endfor %}
+            </div><!-- End row-->
+
+        </div><!-- End col-md-9-->
+
+    </div><!-- End row -->
+</div><!-- End container -->
+<!-- End Content =============================================== -->
+
+
+
+
+<!-- SPECIFIC SCRIPTS -->
+<script  src="{% static "js/cat_nav_mobile.js" %}"></script>
+<script>$('#cat_nav').mobileMenu();</script>
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+<script src="{% static "js/map.js" %}"></script>
+<script src="{% static "js/infobox.js" %}"></script>
+<script src="{% static "js/ion.rangeSlider.js" %}"></script>
+<script>
+    $(function () {
+        'use strict';
+        $("#range").ionRangeSlider({
+            hide_min_max: true,
+            keyboard: true,
+            min: 0,
+            max: 15,
+            from: 0,
+            to:5,
+            type: 'double',
+            step: 1,
+            prefix: "Km ",
+            grid: true
+        });
+    });
+</script>
+{% endblock content %}
+

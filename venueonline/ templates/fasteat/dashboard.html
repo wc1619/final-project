@@ -1,0 +1,170 @@
+{% extends 'fasteat/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- SubHeader ============================================== -->
+<section class="parallax-window" data-parallax="scroll" data-image-src="{% static "img/bg.jpeg" %}" data-natural-width="1400" data-natural-height="470">
+    <div id="subheader">
+        <div id="sub_content">
+{#            <div id="thumb"><img src="{{restaurant.image_url}}" alt=""></div>#}
+            <h1>Order Management</h1>
+{#            <div class="rating"><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i> (<small><a href="detail_page_2.html">Read Reviews</a></small>)</div>#}
+{#            <hr>#}
+{#            <div><i class="icon_pin"></i> {{ restaurant.address }} </div>#}
+{#            <div><strong>Open Time:</strong> {{ restaurant.startTime}} - {{restaurant.endTime}}</div>#}
+        </div><!-- End sub_content -->
+    </div><!-- End subheader -->
+</section><!-- End section -->
+<!-- End SubHeader ============================================ -->
+
+<div id="position">
+    <div class="container">
+{#        <ul>#}
+{#            <li><a href="#0">Home</a></li>#}
+{#            <li><a href="#0">Category</a></li>#}
+{#            <li>Page active</li>#}
+{#        </ul>#}
+{#        <a href="#0" class="search-overlay-menu-btn"><i class="icon-search-6"></i> Search</a>#}
+    </div>
+</div><!-- Position -->
+
+<!-- Content ================================================== -->
+<div class="container margin_60_35">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box_style_2" id="main_menu">
+                <h2 class="inner">Pending Orders</h2>
+                <table class="table table-striped cart-list">
+                    <thead>
+                        <tr>
+                            <th> Customer </th>
+                            <th>OrderStatus</th>
+                            <th>Order Time</th>
+                            <th>Amount</th>
+                            <th>View more</th>
+                            <th>Operation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for pOrder in orders%}
+                        {% if pOrder.ordered == 'P' and pOrder.refCode != None %}
+                        <tr>
+                            <td><p>{{ pOrder.user.name}}</p></td>
+                            <td><p>Pending</p></td>
+                            <td>{{ pOrder.orderedDate }}</td>
+                            <td>£{{ pOrder.getTotalPrice}}</td>
+                            <td class="options">
+                            <div class="dropdown dropdown-options">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><i class="icon_plus_alt2"></i></a>
+                                <div class="dropdown-menu">
+                                <table class="table table-striped cart-list">
+                                <thead><th>Food</th><th>Qty</th></thead>
+                                <tbody>
+                                    {% for item in items %}
+                                        {% if item.order.id == pOrder.id %}
+                                            <tr>
+                                            <td><strong>{{ item.foodItem.name }}</strong></td>
+                                            <td><strong>{{ item.quantity }}</strong></td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+
+                                </div>
+                            </div>
+                            </td>
+                            <td><button id="cmpOrder" data-orderid="{{ pOrder.id }}">Complete</button></td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- End box_style_1 -->
+        </div><!-- End col-md-6 -->
+
+        <div class="col-md-12">
+            <div class="box_style_2" id="main_menu">
+                <h2 class="inner">Complete Orders</h2>
+                <table class="table table-striped cart-list">
+                    <thead>
+                    <tr>
+                        <th> Customer </th>
+                        <th>OrderStatus</th>
+                        <th>Order Time</th>
+                        <th>Amount</th>
+                        <th>View more</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for cOrder in orders%}
+                        {% if cOrder.ordered == 'C' %}
+                            <tr>
+                                <td><p>{{ cOrder.user.name}}</p></td>
+                                <td><p>Complete</p></td>
+                                <td>{{ cOrder.orderedDate }}</td>
+                                <td>£{{ cOrder.getTotalPrice }}</td>
+                                <td class="options">
+                                    <div class="dropdown dropdown-options">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><i class="icon_plus_alt2"></i></a>
+                                        <div class="dropdown-menu">
+                                            <table class="table table-striped cart-list">
+                                                <thead><th>Food</th><th>Qty</th></thead>
+                                                <tbody>
+                                                {% for item in items %}
+                                                    {% if item.order.id == cOrder.id %}
+                                                        <tr>
+                                                        <td><strong>{{ item.foodItem.name }}</strong></td>
+                                                        <td><strong>{{ item.quantity }}</strong></td>
+                                                    {% endif %}
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div><!-- End box_style_1 -->
+        </div><!-- End col-md-6 -->
+
+    </div><!-- End row -->
+</div><!-- End container -->
+<!-- End Content =============================================== -->
+<script type="text/javascript">
+    document.getElementById('cmpOrder').addEventListener('click',function (e) {
+        var orderId = this.dataset.orderid
+        updateOrderStatus(orderId)
+        {#window.location.href = '{% url 'fasteat:venuesgrid' %}'#}
+    })
+
+    function updateOrderStatus(orderId) {
+        alert('Finish the order');
+        var url = '/fasteat/updataOrderStatus/'
+
+        fetch(url,{
+            method:"POST",
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRFToken':csrftoken,
+            },
+            body:JSON.stringify({'orderId':orderId})
+        })
+
+            .then((response)=>{
+                return response.json();
+            })
+
+            .then( data =>{
+                location.reload();
+                console.log('data',data)
+            })
+    }
+
+</script>
+{% endblock content %}
